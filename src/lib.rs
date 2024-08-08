@@ -1,6 +1,17 @@
 pub fn encrypt(input: &str, key: isize) -> String {
-    let modified_string: String = input.chars()
-        .map(|ch: char|
+    cipher(input, key, true)
+}
+
+pub fn decrypt(input: &str, key: isize) -> String {
+    cipher(input, key, false)
+}
+
+fn cipher(input: &str, key: isize, enc: bool) -> String {
+    let key = if enc { key } else { -key };
+
+    input
+        .chars()
+        .map(|ch| {
             if ch.is_ascii_uppercase() {
                 ((ch as isize - 'A' as isize + key).rem_euclid(26) + 'A' as isize) as u8 as char
             } else if ch.is_ascii_lowercase() {
@@ -8,28 +19,10 @@ pub fn encrypt(input: &str, key: isize) -> String {
             } else if ch.is_ascii_digit() {
                 ((ch as isize - '0' as isize + key).rem_euclid(10) + '0' as isize) as u8 as char
             } else {
-                ch as u8 as char
+                ch
             }
-        ).collect();
-
-    modified_string
-}
-
-pub fn decrypt(input: &str, key: isize) -> String {
-    let modified_string: String = input.chars()
-    .map(|ch|
-        if ch.is_ascii_uppercase() {
-            ((ch as isize - 'A' as isize - key).rem_euclid(26) + 'A' as isize) as u8 as char
-        } else if ch.is_ascii_lowercase() {
-            ((ch as isize - 'a' as isize - key).rem_euclid(26) + 'a' as isize) as u8 as char
-        } else if ch.is_ascii_digit() {
-            ((ch as isize - '0' as isize - key).rem_euclid(10) + '0' as isize) as u8 as char
-        } else {
-            ch
-        }
-    ).collect();
-
-    modified_string
+        })
+        .collect()
 }
 
 #[cfg(test)]
@@ -41,7 +34,7 @@ mod tests {
         let result = encrypt("abc", 3);
         assert_eq!(result, "def");
     }
-    
+
     #[test]
     fn test_encrypt_short_negative() {
         let result = encrypt("abc", -3);
@@ -61,7 +54,7 @@ mod tests {
         let msg =    "If he had anything confidential to say, he wrote it in cipher, that is, by so changing the order of the letters of the alphabet, that not a word could be made out.";
         let cipher = "By ax atw tgrmabgz vhgybwxgmbte mh ltr, ax pkhmx bm bg vbiaxk, matm bl, ur lh vatgzbgz max hkwxk hy max exmmxkl hy max teiatuxm, matm ghm t phkw vhnew ux ftwx hnm.";
         let result = encrypt(msg, -59);
-        assert_eq!(result, cipher); 
+        assert_eq!(result, cipher);
     }
 
     #[test]
@@ -130,16 +123,16 @@ mod tests {
     fn test_decryption_long() {
         let msg =    "If he had anything confidential to say, he wrote it in cipher, that is, by so changing the order of the letters of the alphabet, that not a word could be made out.";
         let cipher = "Pm ol ohk hufaopun jvumpkluaphs av zhf, ol dyval pa pu jpwoly, aoha pz, if zv johunpun aol vykly vm aol slaalyz vm aol hswohila, aoha uva h dvyk jvbsk il thkl vba.";
-        let result = decrypt(cipher, 33);   
-        assert_eq!(result, msg); 
+        let result = decrypt(cipher, 33);
+        assert_eq!(result, msg);
     }
 
     #[test]
     fn test_decryption_long_negative() {
         let msg =    "If he had anything confidential to say, he wrote it in cipher, that is, by so changing the order of the letters of the alphabet, that not a word could be made out.";
         let cipher = "By ax atw tgrmabgz vhgybwxgmbte mh ltr, ax pkhmx bm bg vbiaxk, matm bl, ur lh vatgzbgz max hkwxk hy max exmmxkl hy max teiatuxm, matm ghm t phkw vhnew ux ftwx hnm.";
-        let result = decrypt(cipher, -33);   
-        assert_eq!(result, msg); 
+        let result = decrypt(cipher, -33);
+        assert_eq!(result, msg);
     }
 
     #[test]
