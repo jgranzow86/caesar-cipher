@@ -185,7 +185,7 @@ mod tests {
     fn test_encrypt_decrypt() {
         let key = -8_446_744_073_709_551_606;
         let msg = "HELLO there from Rust";
-        let enc = encrypt(message, key);
+        let enc = encrypt(msg, key);
         let dec = decrypt(&enc, key);
         assert_eq!(msg, dec);
     }
