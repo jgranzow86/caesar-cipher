@@ -1,14 +1,12 @@
 pub fn encrypt(input: &str, key: isize) -> String {
-    cipher(input, key, true)
+    cipher(input, key)
 }
 
 pub fn decrypt(input: &str, key: isize) -> String {
-    cipher(input, key, false)
+    cipher(input, -key)
 }
 
-fn cipher(input: &str, key: isize, enc: bool) -> String {
-    let key = if enc { key } else { -key };
-
+fn cipher(input: &str, key: isize) -> String {
     input
         .chars()
         .map(|ch| {
@@ -181,5 +179,14 @@ mod tests {
         let cipher = "e5f6g7h8i9j0k1l2m3n4";
         let result = decrypt(cipher, -8_446_744_073_709_551_606);
         assert_eq!(result, msg);
+    }
+
+    #[test]
+    fn test_encrypt_decrypt() {
+        let key = -8_446_744_073_709_551_606;
+        let msg = "HELLO there from Rust";
+        let enc = encrypt(message, key);
+        let dec = decrypt(&enc, key);
+        assert_eq!(msg, dec);
     }
 }
